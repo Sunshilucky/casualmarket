@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, redirect, session
-import mysql.connector
-from config import Config
+import pymysql
+from config import db_config
 
-#aqui importamos los models
+# aqui importamos los models
 from models.producto import obtener_todos, obtener_por_id
 from models.categoria import obtener_categorias
 from models.usuario import buscar_usuario, registrar_usuario
@@ -10,10 +10,6 @@ from models.pedido import crear_pedido, agregar_detalle
 
 app = Flask(__name__)
 app.secret_key = "clave_secreta"
-
-#La conexion global  
-import pymysql
-from config import db_config
 
 def get_db():
     return pymysql.connect(
@@ -24,6 +20,8 @@ def get_db():
         port=db_config["port"],
         cursorclass=pymysql.cursors.DictCursor
     )
+
+
 
 
 #Funcion para verificar si el usuario es admin
