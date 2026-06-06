@@ -12,13 +12,19 @@ app = Flask(__name__)
 app.secret_key = "clave_secreta"
 
 #La conexion global  
+import pymysql
+from config import db_config
+
 def get_db():
-    return mysql.connector.connect(
-        host=Config.MYSQL_HOST,
-        user=Config.MYSQL_USER,
-        password=Config.MYSQL_PASSWORD,
-        database=Config.MYSQL_DB
+    return pymysql.connect(
+        host=db_config["host"],
+        user=db_config["user"],
+        password=db_config["password"],
+        database=db_config["database"],
+        port=db_config["port"],
+        cursorclass=pymysql.cursors.DictCursor
     )
+
 
 #Funcion para verificar si el usuario es admin
 def solo_admin():
