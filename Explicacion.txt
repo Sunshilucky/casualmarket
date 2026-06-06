@@ -1,0 +1,344 @@
+EXPLICACIÓN DEL FUNCIONAMIENTO DE CASUALMARKET
+
+CasualMarket es una tienda en línea desarrollada utilizando Flask, HTML, CSS y MySQL. El objetivo principal del proyecto es permitir que los usuarios puedan visualizar productos relacionados con mangas y artículos coleccionables, agregarlos a un carrito de compras y realizar pedidos, mientras que el administrador tiene acceso a herramientas especiales para gestionar la tienda.
+
+La estructura del proyecto está organizada en carpetas y archivos que cumplen funciones específicas para mantener el código ordenado y facilitar su mantenimiento.
+
+Estructura general del proyecto
+
+El archivo principal del sistema es app.py, donde se encuentra toda la lógica de funcionamiento de la aplicación.
+
+Desde este archivo se realizan:
+
+--La configuración de Flask.
+--La conexión con la base de datos MySQL.
+--La definición de todas las rutas del sistema.
+--El control de usuarios y sesiones.
+--Las consultas a la base de datos.
+--Las operaciones de inserción, edición y eliminación de información.
+
+También existe el archivo config.py, encargado de almacenar la configuración necesaria para la conexión con la base de datos y otros parámetros generales del sistema.
+
+Carpeta Models
+
+Dentro de la carpeta models se encuentran los archivos encargados de representar las tablas de la base de datos.
+
+Los modelos utilizados son:
+
+--usuario.py
+--producto.py
+--categoria.py
+--pedido.py
+
+Cada uno permite organizar la información correspondiente a una entidad específica del sistema.
+
+Por ejemplo:
+
+--usuario.py administra la información de los usuarios.
+--producto.py administra la información de los productos.
+--categoria.py administra las categorías.
+--pedido.py administra los pedidos realizados por los clientes.
+
+Esta separación ayuda a mantener una estructura más limpia y modular.
+
+Carpeta Templates
+
+Dentro de la carpeta templates se encuentran todas las vistas HTML utilizadas por el sistema.
+
+base.html
+
+Es la plantilla principal de toda la aplicación.
+
+Contiene:
+
+-- Navbar.
+-- Footer.
+-- Estructura general de la página.
+-- Bloques reutilizables para el contenido.
+
+Todas las demás páginas heredan esta estructura para evitar repetir código.
+
+index.html
+
+Corresponde a la página principal.
+
+Aquí se muestra:
+
+-- El banner principal.
+-- Un mensaje de bienvenida.
+-- Productos destacados.
+-- Accesos rápidos al catálogo.
+
+El banner solamente aparece en esta página para darle una presentación más atractiva al inicio.
+
+productos.html
+
+Muestra todos los productos disponibles en la tienda.
+
+Cada producto aparece dentro de una tarjeta con:
+
+-- Imagen.
+-- Nombre.
+-- Precio.
+-- Descripción.
+-- Selector de cantidad.
+-- Botón para agregar al carrito.
+
+categoria.html
+
+Permite visualizar productos filtrados por categoría.
+
+Cuando un usuario selecciona una categoría, solamente se muestran los productos relacionados con ella.
+
+carrito.html
+
+Muestra todos los productos agregados por el usuario.
+
+Dentro de esta página se puede:
+
+-- Visualizar productos seleccionados.
+-- Modificar cantidades.
+-- Eliminar productos.
+-- Consultar subtotales.
+-- Consultar el total de la compra.
+
+login.html
+
+Permite a los usuarios iniciar sesión dentro del sistema.
+
+registro.html
+
+Permite registrar nuevos usuarios para que puedan realizar compras.
+
+pagar.html
+
+Se utiliza para finalizar el proceso de compra.
+
+En esta sección se registran los datos necesarios para generar el pedido.
+
+pedido_exito.html
+
+Se muestra después de completar correctamente una compra.
+
+Confirma al usuario que el pedido fue registrado exitosamente.
+
+pedidos.html
+
+Permite visualizar los pedidos almacenados en el sistema.
+
+detalle_pedido.html
+
+Muestra información específica de cada pedido realizado.
+
+Incluye los productos comprados, cantidades y subtotales correspondientes.
+
+destacados.html
+
+Muestra los productos marcados como destacados para aparecer en la página principal.
+
+agregar_producto.html
+
+Permite al administrador registrar nuevos productos.
+
+editar_producto.html
+
+Permite al administrador modificar información existente de un producto.
+
+editar_producto_form.html
+
+Contiene el formulario utilizado para actualizar los datos de un producto.
+
+eliminar_producto.html
+
+Permite eliminar productos del catálogo.
+
+admin_usuarios.html
+
+Muestra la lista de usuarios registrados dentro del sistema.
+
+admin_usuarios_editar.html
+
+Permite editar la información de los usuarios registrados.
+
+Carpeta Static
+
+La carpeta static almacena todos los recursos visuales utilizados por la página.
+
+Carpeta img
+
+Contiene:
+
+-- Imágenes de productos.
+-- Banner principal.
+-- Recursos gráficos utilizados por la tienda.
+
+style.css
+
+Contiene todos los estilos personalizados del sistema.
+
+Se utilizó una paleta de colores basada en:
+
+-- Amarillo.
+-- Café.
+-- Crema.
+
+Entre los elementos visuales implementados se encuentran:
+
+-- Navbar con degradado.
+-- Fondo general con degradado suave.
+-- Tarjetas con sombras.
+-- Bordes redondeados.
+-- Botones personalizados.
+-- Banner principal.
+-- Contenedores blancos para destacar información.
+
+El objetivo fue crear una interfaz limpia, agradable y fácil de utilizar.
+
+Funcionamiento de las rutas principales
+Las rutas definidas en app.py permiten acceder a cada sección del sistema.
+
+-- Ruta de inicio:
+Esta ruta carga index.html y muestra los productos destacados junto con el banner principal.
+
+-- Ruta de productos:
+Obtiene todos los productos almacenados en la base de datos y los muestra dentro del catálogo.
+
+-- Ruta de categorías:
+Obtiene las categorías registradas y permite filtrar productos según la selección realizada por el usuario.
+
+-- Ruta del carrito:
+Gestiona todos los productos agregados por el usuario durante su navegación.
+
+-- Ruta de registro:
+Permite crear nuevas cuentas dentro del sistema.
+Cada usuario nuevo se registra automáticamente con el rol de cliente.
+
+-- Ruta de inicio de sesión:
+Verifica las credenciales ingresadas por el usuario y permite acceder a funciones específicas según su rol.
+
+-- Ruta de pago:
+Genera un pedido utilizando los productos almacenados en el carrito.
+La información se guarda dentro de las tablas pedidos y detalle_pedido.
+
+-- Rutas administrativas:
+Estas rutas solamente pueden ser utilizadas por el administrador.
+
+Permiten:
+
+-- Agregar productos.
+-- Editar productos.
+-- Eliminar productos.
+-- Administrar usuarios.
+-- Consultar pedidos.
+-- Gestionar productos destacados.
+
+Funciones disponibles para los clientes
+
+Los usuarios con rol de cliente pueden:
+
+-- Navegar por toda la tienda.
+-- Consultar productos.
+-- Filtrar productos por categorías.
+-- Registrarse.
+-- Iniciar sesión.
+-- Agregar productos al carrito.
+-- Modificar cantidades.
+-- Eliminar productos del carrito.
+-- Realizar pedidos.
+-- Consultar sus compras.
+
+Los clientes no pueden modificar información interna de la tienda.
+
+Funciones disponibles para el administrador
+
+El sistema cuenta con un único administrador.
+
+Este administrador corresponde al usuario con id 1 dentro de la base de datos.
+
+Sus funciones son:
+
+-- Agregar productos.
+-- Editar productos.
+-- Eliminar productos.
+-- Administrar usuarios.
+-- Consultar pedidos.
+-- Consultar detalles de pedidos.
+-- Seleccionar productos destacados.
+-- Mantener actualizado el catálogo.
+
+Estas funciones permiten controlar completamente el funcionamiento de la tienda.
+
+Funcionamiento de la base de datos
+
+La base de datos MySQL es la encargada de almacenar toda la información del sistema.
+
+Tabla usuarios
+
+Almacena:
+
+-- id
+-- nombre
+-- correo
+-- contraseña
+-- rol
+-- fecha_registro
+
+Permite identificar administradores y clientes.
+
+Tabla categorias
+
+Almacena:
+
+-- id
+-- nombre
+
+Permite organizar los productos según su tipo.
+
+Tabla productos
+
+Almacena:
+
+-- id
+-- titulo
+-- precio
+-- descripcion
+-- imagen
+-- categoria_id
+-- destacado
+
+Cada producto pertenece a una categoría específica.
+
+Tabla pedidos
+
+Almacena:
+
+-- id
+-- usuario_id
+-- fecha
+-- total
+-- estado
+
+Permite registrar cada compra realizada.
+
+Tabla detalle_pedido
+
+Almacena:
+
+-- id
+-- pedido_id
+-- producto_id
+-- cantidad
+-- subtotal
+
+Permite conocer exactamente qué productos forman parte de cada pedido.
+
+-Funcionamiento general del sistema:
+
+El funcionamiento completo comienza cuando el usuario accede a la página principal. Desde ahí puede navegar por las categorías, consultar productos y agregarlos al carrito. Cuando desea finalizar una compra, debe iniciar sesión o crear una cuenta. Posteriormente puede realizar el pago y generar un pedido que queda registrado en la base de datos.
+
+Por otro lado, el administrador dispone de herramientas especiales para gestionar el contenido de la tienda. Puede agregar nuevos productos, modificar los existentes, eliminar artículos, gestionar usuarios y revisar pedidos realizados por los clientes.
+
+Toda la información mostrada en la página proviene de la base de datos MySQL, lo que permite que cualquier cambio realizado se refleje inmediatamente dentro del sistema.
+
+Conclusión:
+CasualMarket es una tienda en línea funcional desarrollada con Flask, HTML, CSS y MySQL. La aplicación está organizada mediante una estructura clara que separa la lógica del sistema, las vistas y los estilos. Gracias a esta organización, el sistema permite una navegación sencilla para los clientes y un control completo para el administrador, ofreciendo una experiencia visual agradable y una administración eficiente de los productos y pedidos

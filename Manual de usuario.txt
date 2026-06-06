@@ -1,0 +1,134 @@
+MANUAL DE USUARIOS
+
+1. Inicio de la pagina
+Al entrar a CasualMarket, el usuario llega a la pagina principal o pagina de inicio. En esta pantalla se muestra un mensaje de bienvenida, un banner principal y un boton que lleva directamente al catalogo completo de productos. Tambien se muestran categorías y productos destacados dentro de un contenedor blanco para una mejor presentación visual Y organizacion.
+
+El banner solo aparece en esta pagina gracias a una condición interna del sistema. Esto permite que el inicio tenga una presentación mas llamativa sin afectar el resto de las paginas.
+
+
+2. Navegación general
+La pagina cuenta con un menu superior o navbar que permite acceder rápidamente a las secciones principales. Este menu esta disponible en todas las paginas y contiene enlaces como:
+
+Inicio
+Productos
+Categorías
+Carrito
+
+Y otras como Agregar, editar y eliminar producto, ver pedidos y productos destacados. Estos solo lo puede ver el Admin
+
+El usuario puede moverse libremente entre estas secciones sin necesidad de iniciar sesion, ya que la tienda esta pensada para ser de uso publico, solo te pedirá iniciar sesión o crear una cuenta al momento de pagar un pedido.
+
+
+3. Catalogo de productos
+La sección de productos muestra todos los artículos disponibles en la tienda. Cada producto aparece dentro de una tarjeta que contiene:
+
+Imagen del producto
+Titulo
+Precio
+Un campo para seleccionar cantidad
+Un botón para agregar al carrito
+
+El usuario puede agregar cualquier producto al carrito seleccionando la cantidad deseada y presionando el botón correspondiente.
+
+
+4. Categorías
+La tienda cuenta con varias categorías para facilitar la búsqueda de productos. Las categorías disponibles son:
+
+Mangas
+Figuras
+Peluches
+Llaveros
+Ropa
+Posters
+
+Al seleccionar una categoría, la pagina muestra solo los productos que pertenecen a esa categoría. Esto permite una navegación mas ordenada y rápida.
+
+
+5. Carrito de compras
+El carrito es una sección donde el usuario puede ver todos los productos que ha agregado. En esta pagina se puede:
+
+Ver la lista completa de productos seleccionados
+Eliminar productos del carrito
+Ver el total y subtotal acumulado
+
+El carrito se actualiza automáticamente cada vez que el usuario realiza un cambio.
+
+
+6. Panel de administrador
+CasualMarket cuenta con un administrador único. Esto significa que solo existe un usuario con permisos especiales, y este usuario siempre es el que tiene el id 1 en la base de datos. No se permite crear otro usuario con ese id, por lo que solo puede existir un administrador. El rol de "cliente" esta como default cada que se agrega un nuevo usuario.
+
+El administrador tiene acceso a funciones que los demás usuarios no pueden ver, como:
+
+Agregar productos nuevos
+Eliminar productos
+Editar productos
+Ver los pedidos hechos
+Ver, editar y eliminar los usuarios
+Escoger que productos serán destacados
+
+Estas funciones permiten mantener la tienda actualizada y organizada.
+
+
+7. Funcionamiento interno de la base de datos
+La base de datos MySQL contiene varias tablas importantes:
+
+-Tabla usuarios
+Aqui se almacena la informacion del administrador y los nuevos clientes.
+Solo puede existir un usuario con id 1, y este es el administrador.
+Este usuario tiene permisos especiales para modificar el contenido de la tienda.
+
+-Tabla productos
+Guarda informacion como:
+titulo
+precio
+categoria
+imagen
+y la opción de destacados
+
+Cada producto tiene un id unico que permite identificarlo dentro del sistema.
+
+-Tabla categorias
+Contiene los nombres de las categorias disponibles.
+Cada producto esta asociado a una categoria mediante un id.
+
+-Tabla pedidos
+Aquí están:
+
+id del pedido
+el id del usuario
+la fecha en que se realizo
+y el total del pedido
+
+-Tabla detalles de pedidos
+que tiene:
+
+id
+pedido id
+producto id
+cantidad
+y subtotal
+
+Estas tablas son muy importantes para que el admin pueda administrar todos.
+
+
+8. Diseno visual y estilos
+
+La pagina utiliza un archivo CSS personalizado para lograr un estilo limpio y agradable. Algunos elementos importantes del diseño son:
+
+Una paleta de colores basada en tonos cafe, amarillo y crema
+Un navbar con un degradado de tres colores
+Un fondo general con un degradado suave
+Tarjetas de productos con sombra y bordes redondeados
+Botones personalizados con colores propios
+Un contenedor blanco para secciones importantes
+Un banner principal solo visible en el inicio
+El objetivo del diseño es ofrecer una experiencia visual agradable sin afectar la funcionalidad.
+
+
+9. Funcionamiento general del sistema
+El usuario puede navegar libremente por la tienda, ver productos, filtrarlos por categoria y agregarlos al carrito. No necesita iniciar sesion para usar la tienda pero si ocupara al momento de pagar un pedido.
+El administrador puede gestionar los productos desde su panel especial. Esto permite mantener la tienda actualizada sin necesidad de modificar archivos manualmente.
+Todo el sistema esta conectado a la base de datos, lo que garantiza que los cambios se reflejen de inmediato en la pagina.
+
+-
+CasualMarket es una tienda en linea funcional, organizada y facil de usar. El sistema permite una navegacion clara para los usuarios y un control completo para el administrador. La estructura del proyecto esta dividida en archivos especificos para la logica, las vistas y los estilos, lo que facilita su mantenimiento y expansion. El diseño visual fue creado para ofrecer una experiencia agradable y profesional.

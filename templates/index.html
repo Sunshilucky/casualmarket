@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="contenedor-blanco text-center p-4 mb-2">
+    <div class="text-center mb-2">
+        <h1>Bienvenido a CasualMarket</h1>
+        <h5>Tienda de mangas, figuras y coleccionables</h5>
+        <p></p>
+        <div class="contenedor-blanco text-center p-3 mb-2">
+            <a href="/productos" class="btn btn-warning">Ver catalogo</a>
+        </div>
+    </div>
+</div> 
+
+
+
+<!-- CONTENEDOR ESTÉTICO -->
+
+<div class="contenedor-blanco text-center p-4 mb-5">
+    <h1 class=>Categorias</h1>
+    <h5>Selecciona la categoria que gustas explorar</h5>
+    <p></p>
+    <div class="contenedor-blanco text-center p-3 mb-2">
+        <div class="d-flex justify-content-around mb-2 flex-wrap gap-2">
+            <a href="/categoria/1" class="btn btn-dark">Mangas</a>
+            <a href="/categoria/2" class="btn btn-dark">Figuras</a>
+            <a href="/categoria/3" class="btn btn-dark">Peluches</a>
+            <a href="/categoria/4" class="btn btn-dark">Llaveros</a>
+            <a href="/categoria/5" class="btn btn-dark">Ropa</a>
+            <a href="/categoria/6" class="btn btn-dark">Posters</a>
+        </div>
+    </div>
+</div>
+
+<div class="contenedor-blanco text-center p-4 mb-5">
+    <h1 class="mb-3">Productos destacados</h1>
+    <div class="row">
+        {% for p in productos %}
+        <div class="col-md-2 mb-4">
+            <div class="card">
+                <img src="/static/img/{{ p.imagen }}" class="card-img-top">
+                <div class="card-body text-center">
+                    <h5>{{ p.titulo }}</h5>
+                    <p>${{ p.precio }}</p>
+
+                    <form action="/agregar_carrito/{{ p.id }}" method="POST" class="d-inline">
+                        <input type="number" name="cantidad" value="1" min="1"
+                               class="form-control d-inline" style="width:70px;">
+                        <button type="submit" class="btn btn-success mt-2">Agregar al carrito</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div> <!-- FIN DEL CONTENEDOR -->
+
+{% endblock %}

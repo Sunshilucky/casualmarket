@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="mb-3">
+    <a href="/" class="btn btn-dark">Regresar a inicio</a>
+</div>
+
+<h2 class="mb-4">Eliminar producto</h2>
+
+<div class="row">
+    {% for p in productos %}
+    <div class="col-md-2 mb-3">
+        <div class="card h-100">
+
+            <img src="/static/img/{{ p.imagen }}" class="card-img-top" alt="{{ p.titulo }}">
+
+            <div class="card-body text-center">
+                <h5 class="card-title">{{ p.titulo }}</h5>
+                <p class="card-text">${{ p.precio }}</p>
+
+                {% if session.get('rol') == 'admin' %}
+                <a href="/eliminar_producto/{{ p.id }}"
+                   class="btn btn-danger btn-sm mt-2"
+                   onclick="return confirm('¿Seguro que deseas eliminar este producto?');">
+                    Eliminar
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

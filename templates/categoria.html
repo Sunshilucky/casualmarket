@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2 class="mb-4">{{ categoria.nombre }}</h2>
+
+<div class="mb-3">
+    <a href="/" class="btn btn-dark">Regresar a inicio</a>
+</div>
+
+<div class="row">
+    {% for p in productos %}
+    <div class="col-md-2 mb-3">
+        <div class="card h-100">
+            <img src="/static/img/{{ p.imagen }}" class="card-img-top" alt="{{ p.titulo }}">
+            <div class="card-body text-center">
+                <h5 class="card-title">{{ p.titulo }}</h5>
+                <p class="card-text">${{ p.precio }}</p>
+                <form action="/agregar_carrito/{{ p.id }}" method="POST" class="d-inline">
+                    <input type="number" name="cantidad" value="1" min="1"
+                           class="form-control d-inline" style="width:70px;">
+                    <button type="submit" class="btn btn-success mt-2">Agregar al carrito</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

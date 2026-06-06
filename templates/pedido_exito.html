@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Pedido realizado</h2>
+
+<p>Total: ${{ total }}</p>
+<p>Monto entregado: ${{ monto }}</p>
+<p>Cambio: ${{ cambio }}</p>
+
+<a href="/" class="btn btn-primary mt-3">Regresar al inicio</a>
+
+{% endblock %}

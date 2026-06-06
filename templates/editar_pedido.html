@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Editar pedido #{{ pedido.id }}</h2>
+
+<h4>Productos en el pedido</h4>
+
+<a href="/pedidos" class="btn btn-secondary mt-3">Volver a pedidos</a>
+
+
+<form action="/guardar_pedido/{{ pedido.id }}" method="POST">
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Subtotal</th>
+            <th>Eliminar</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for d in detalles %}
+        <tr>
+            <td>{{ d.titulo }}</td>
+            <td>
+                <input type="number" name="cantidad_{{ d.id }}" value="{{ d.cantidad }}" min="1" class="form-control">
+            </td>
+            <td>${{ d.precio }}</td>
+            <td>${{ d.precio * d.cantidad }}</td>
+            <td>
+                <input type="checkbox" name="eliminar" value="{{ d.id }}">
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h4>Agregar producto al pedido</h4>
+
+<select name="nuevo_producto" class="form-control">
+    <option value="">-- Seleccionar producto --</option>
+    {% for p in productos %}
+    <option value="{{ p.id }}">{{ p.titulo }} - ${{ p.precio }}</option>
+    {% endfor %}
+</select>
+
+<input type="number" name="nueva_cantidad" class="form-control mt-2" placeholder="Cantidad">
+
+<button class="btn btn-primary mt-3" type="submit">Guardar cambios</button>
+
+</form>
+
+{% endblock %}

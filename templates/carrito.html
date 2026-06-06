@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Carrito de compras</h2>
+
+<div class="mb-3">
+    <a href="/" class="btn btn-dark">Seguir comprando</a>
+</div>
+
+{% if productos|length == 0 %}
+    <h3>El carrito esta vacio</h3>
+{% else %}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+            <th>Accion</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in productos %}
+        <tr>
+            <td>{{ p.titulo }}</td>
+            <td>${{ "%.2f"|format(p.precio) }}</td>
+            <td>{{ p.cantidad }}</td>
+            <td>${{ "%.2f"|format(p.subtotal) }}</td>
+            <td>
+                <a href="/eliminar/{{ p.id }}" class="btn btn-danger btn-sm">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<h3>Total: ${{ "%.2f"|format(total) }}</h3>
+
+<a href="/limpiar_carrito" class="btn btn-warning">Vaciar carrito</a>
+<a href="/pagar" class="btn btn-success">Pagar</a>
+
+{% endif %}
+{% endblock %}

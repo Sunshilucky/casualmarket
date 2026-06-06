@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Detalle del pedido</h2>
+
+{% if detalles %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in detalles %}
+        <tr>
+            <td>{{ item.titulo }}</td>
+            <td>${{ "%.2f"|format(item.precio) }}</td>
+            <td>{{ item.cantidad }}</td>
+            <td>${{ "%.2f"|format(item.subtotal) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No hay detalles para este pedido.</p>
+{% endif %}
+
+<a href="/pedidos" class="btn btn-secondary mt-3">Volver a pedidos</a>
+
+{% endblock %}

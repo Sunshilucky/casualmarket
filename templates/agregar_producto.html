@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Agregar producto</h2>
+
+<div class="mb-3">
+    <a href="/" class="btn btn-dark">Regresar a inicio</a>
+</div>
+
+
+<form action="/guardar_producto" method="POST">
+    <div class="mb-3">
+        <label class="form-label">Titulo</label>
+        <input type="text" name="titulo" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Precio</label>
+        <input type="number" step="0.01" name="precio" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Categoria (id)</label>
+        <input type="number" name="categoria" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Nombre de la imagen tipo .jpeg (archivo dentro en static/img)</label> 
+        <input type="text" name="imagen" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-success">Guardar producto</button>
+</form>
+
+{% endblock %}

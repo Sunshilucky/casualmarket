@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Pedidos</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Fecha</th>
+            <th>Total</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for p in pedidos %}
+        <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.usuario_nombre }}</td>
+
+            <td>{{ p.fecha }}</td>
+            <td>${{ p.total }}</td>
+
+            <td>
+                <a href="/detalle_pedido/{{ p.id }}" class="btn btn-info btn-sm">Ver detalles</a>
+                <a href="/editar_pedido/{{ p.id }}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="/eliminar_pedido/{{ p.id }}"class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que deseas eliminar este pedido?');">
+   Eliminar
+</a>
+
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

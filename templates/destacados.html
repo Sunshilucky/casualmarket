@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Seleccionar productos destacados</h2>
+<h5>Solo pueden ser 6 destacados</h5>
+
+
+<div class="mb-3">
+    <a href="/" class="btn btn-dark">Regresar a inicio</a>
+</div>
+
+<form action="/guardar_destacados" method="POST">
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Destacado</th>
+            <th>ID</th>
+            <th>Titulo</th>
+            <th>Precio</th>
+            <th>Imagen</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for p in productos %}
+        <tr>
+            <td>
+                <input type="checkbox" name="destacados" value="{{ p.id }}"
+                       {% if p.destacado == 1 %}checked{% endif %}>
+            </td>
+            <td>{{ p.id }}</td>
+            <td>{{ p.titulo }}</td>
+            <td>${{ p.precio }}</td>
+            <td><img src="/static/img/{{ p.imagen }}" width="60"></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<button class="btn btn-primary" type="submit">Guardar cambios</button>
+
+</form>
+
+{% endblock %}

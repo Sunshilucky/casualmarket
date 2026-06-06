@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2 class="mb-4">Editar usuario</h2>
+
+<form method="POST">
+
+    <label>Nombre</label>
+    <input type="text" name="nombre" class="form-control mb-3" value="{{ usuario.nombre }}">
+
+    <label>Correo</label>
+    <input type="email" name="correo" class="form-control mb-3" value="{{ usuario.correo }}">
+
+    <label>Rol</label>
+    <select name="rol" class="form-control mb-3">
+        <option value="usuario" {% if usuario.rol == 'usuario' %}selected{% endif %}>Usuario</option>
+        <option value="admin" {% if usuario.rol == 'admin' %}selected{% endif %}>Admin</option>
+    </select>
+
+    <button class="btn btn-success">Guardar cambios</button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2 class="mb-4">Iniciar sesion</h2>
+
+<div class="mb-3">
+    <a href="/" class="btn btn-dark">Regresar a inicio</a>
+</div>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<form action="/login" method="POST">
+
+    <label>Correo:</label>
+    <input type="email" name="correo" class="form-control" required>
+
+    <label class="mt-3">Clave:</label>
+    <input type="password" name="clave" class="form-control" required>
+
+    <button class="btn btn-primary mt-3">Entrar</button>
+
+</form>
+
+<p class="mt-3">
+    No tienes cuenta?
+    <a href="/registro">Registrate aqui</a>
+</p>
+
+{% endblock %}
