@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, session
 import pymysql
 from config import db_config
 
-# aqui importamos los models
+# Importar modelos
 from models.producto import obtener_todos, obtener_por_id
 from models.categoria import obtener_categorias
 from models.usuario import buscar_usuario, registrar_usuario
@@ -11,6 +11,7 @@ from models.pedido import crear_pedido, agregar_detalle
 app = Flask(__name__)
 app.secret_key = "clave_secreta"
 
+# Conexión global usando pymysql + Clever Cloud
 def get_db():
     return pymysql.connect(
         host=db_config["host"],
@@ -21,51 +22,48 @@ def get_db():
         cursorclass=pymysql.cursors.DictCursor
     )
 
-
-
-
-#Funcion para verificar si el usuario es admin
+# Verificar si es admin
 def solo_admin():
     return session.get("rol") == "admin"
 
-#para obtener productos por los id
+# Obtener productos por IDs
 def obtener_productos_por_ids(ids):
     if not ids:
         return []
     formato = ",".join(["%s"] * len(ids))
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute(f"SELECT * FROM productos WHERE id IN ({formato})", tuple(ids))
     productos = cursor.fetchall()
     cursor.close()
     db.close()
     return productos
 
-#Aqui es la pagina principal, quisimos que hubieran productos destacados como en las tiendas reales, lo que mas destaco de aqui es que decidimos poner 6 productos destacados como maximo.
+# Página principal
 @app.route('/')
 def index():
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("SELECT * FROM productos WHERE destacado = 1 LIMIT 6")
     productos = cursor.fetchall()
     cursor.close()
     db.close()
     return render_template('index.html', productos=productos)
 
-#Mostrar todos los productos
+# Mostrar todos los productos
 @app.route('/productos')
 def productos():
     return render_template('productos.html', productos=obtener_todos())
 
-#Pagina para escoger productos destacados (solo admin)
+# Página de destacados (admin)
 @app.route('/destacados')
 def destacados():
     if not solo_admin():
         return redirect('/')
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("SELECT * FROM productos")
     productos = cursor.fetchall()
     cursor.close()
@@ -73,7 +71,7 @@ def destacados():
 
     return render_template('destacados.html', productos=productos)
 
-#Guardar los productos destacados
+# Guardar destacados
 @app.route('/guardar_destacados', methods=['POST'])
 def guardar_destacados():
     if not solo_admin():
@@ -84,10 +82,8 @@ def guardar_destacados():
     db = get_db()
     cursor = db.cursor()
 
-    #Primero poner todos en 0
     cursor.execute("UPDATE productos SET destacado = 0")
 
-    #Luego activar solo los seleccionados
     if ids_destacados:
         formato = ",".join(["%s"] * len(ids_destacados))
         cursor.execute(f"UPDATE productos SET destacado = 1 WHERE id IN ({formato})", tuple(ids_destacados))
@@ -98,11 +94,11 @@ def guardar_destacados():
 
     return redirect('/destacados')
 
-#Mostrar los productos por categoria
+# Productos por categoría
 @app.route('/categoria/<int:id>')
 def categoria(id):
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
 
     cursor.execute("SELECT * FROM productos WHERE categoria_id = %s", (id,))
     productos = cursor.fetchall()
@@ -115,7 +111,7 @@ def categoria(id):
 
     return render_template('categoria.html', productos=productos, categoria=categoria)
 
-# Agregar productos al carrito
+# Agregar al carrito
 @app.route('/agregar_carrito/<int:id>', methods=['POST'])
 def agregar_carrito(id):
     cantidad = int(request.form.get('cantidad', 1))
@@ -131,7 +127,7 @@ def agregar_carrito(id):
     session.modified = True
     return redirect('/carrito')
 
-# Eliminar productos del carrito
+# Eliminar del carrito
 @app.route('/eliminar/<int:id>')
 def eliminar_producto(id):
     carrito = session.get("carrito", [])
@@ -145,7 +141,7 @@ def eliminar_producto(id):
     session.modified = True
     return redirect('/carrito')
 
-# ver el carrito
+# Ver carrito
 @app.route('/carrito')
 def carrito():
     carrito = session.get("carrito", [])
@@ -172,13 +168,13 @@ def carrito():
 
     return render_template('carrito.html', productos=productos, total=total)
 
-# Para vaciar el carrito
+# Limpiar carrito
 @app.route('/limpiar_carrito')
 def limpiar_carrito():
     session.pop("carrito", None)
     return redirect('/carrito')
 
-# Para pagar
+# Pagar
 @app.route('/pagar', methods=['GET', 'POST'])
 def pagar():
     carrito = session.get("carrito", [])
@@ -209,14 +205,14 @@ def pagar():
 
     return render_template('pagar.html', total=total)
 
-#Para ver todos los pedidos (solo el admin)
+# Ver pedidos (admin)
 @app.route('/pedidos')
 def ver_pedidos():
     if not solo_admin():
         return redirect('/')
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("""
     SELECT p.id, p.fecha, p.total,
            u.nombre AS usuario_nombre
@@ -229,14 +225,14 @@ def ver_pedidos():
     db.close()
     return render_template('pedidos.html', pedidos=pedidos)
 
-#Ver detalles del pedido (solo admin)
+# Detalle pedido
 @app.route('/detalle_pedido/<int:id>')
 def ver_detalle_pedido(id):
     if not solo_admin():
         return redirect('/')
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("""
         SELECT dp.cantidad,
                dp.subtotal,
@@ -252,20 +248,18 @@ def ver_detalle_pedido(id):
 
     return render_template('detalle_pedido.html', detalles=detalles)
 
-#Editar pedido (solo admin)
+# Editar pedido
 @app.route('/editar_pedido/<int:id>')
 def editar_pedido(id):
     if not solo_admin():
         return redirect('/')
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
 
-    # Obtener datos del pedido
     cursor.execute("SELECT * FROM pedidos WHERE id = %s", (id,))
     pedido = cursor.fetchone()
 
-    # Obtener productos dentro del pedido
     cursor.execute("""
         SELECT dp.id,
                dp.cantidad,
@@ -279,7 +273,6 @@ def editar_pedido(id):
     """, (id,))
     detalles = cursor.fetchall()
 
-    # Obtener todos los productos para agregarlos al pedido
     cursor.execute("SELECT * FROM productos")
     productos = cursor.fetchall()
 
@@ -288,7 +281,7 @@ def editar_pedido(id):
 
     return render_template('editar_pedido.html', pedido=pedido, detalles=detalles, productos=productos)
 
-#Eliminar pedido (solo admin)
+# Eliminar pedido
 @app.route('/eliminar_pedido/<int:id>')
 def eliminar_pedido(id):
     if not solo_admin():
@@ -303,7 +296,7 @@ def eliminar_pedido(id):
     db.close()
     return redirect('/pedidos')
 
-#Guardar cambios del pedido editado
+# Guardar edición de pedido
 @app.route('/guardar_pedido/<int:id>', methods=['POST'])
 def guardar_pedido(id):
     if not solo_admin():
@@ -312,44 +305,40 @@ def guardar_pedido(id):
     db = get_db()
     cursor = db.cursor()
 
-    # 1. Actualizar cantidades
     cursor.execute("SELECT id, cantidad FROM detalle_pedido WHERE pedido_id = %s", (id,))
     detalles = cursor.fetchall()
 
     for d in detalles:
-        nueva_cantidad = request.form.get(f"cantidad_{d[0]}")
+        nueva_cantidad = request.form.get(f"cantidad_{d['id']}")
         if nueva_cantidad:
             cursor.execute("""
                 UPDATE detalle_pedido
                 SET cantidad = %s
                 WHERE id = %s
-            """, (nueva_cantidad, d[0]))
+            """, (nueva_cantidad, d['id']))
 
-    # 2. Eliminar productos marcados
     eliminar_id = request.form.getlist("eliminar")
     for det_id in eliminar_id:
         cursor.execute("DELETE FROM detalle_pedido WHERE id = %s", (det_id,))
 
-    # 3. Agregar nuevo producto
     nuevo_producto = request.form.get("nuevo_producto")
     nueva_cantidad = request.form.get("nueva_cantidad")
 
     if nuevo_producto and nueva_cantidad:
         cursor.execute("SELECT precio FROM productos WHERE id = %s", (nuevo_producto,))
-        precio = cursor.fetchone()[0]
+        precio = cursor.fetchone()['precio']
 
         cursor.execute("""
             INSERT INTO detalle_pedido (pedido_id, producto_id, cantidad, subtotal)
             VALUES (%s, %s, %s, %s)
         """, (id, nuevo_producto, nueva_cantidad, float(precio) * int(nueva_cantidad)))
 
-    # 4. Recalcular total
     cursor.execute("""
         SELECT SUM(subtotal)
         FROM detalle_pedido
         WHERE pedido_id = %s
     """, (id,))
-    total = cursor.fetchone()[0] or 0
+    total = cursor.fetchone()['SUM(subtotal)'] or 0
 
     cursor.execute("UPDATE pedidos SET total = %s WHERE id = %s", (total, id))
 
@@ -359,14 +348,14 @@ def guardar_pedido(id):
 
     return redirect('/pedidos')
 
-#Agregar producto (solo el admin)
+# Agregar producto (admin)
 @app.route('/agregar_producto')
 def agregar_producto():
     if not solo_admin():
         return redirect('/')
     return render_template('agregar_producto.html')
 
-#Guardar producto (solo el admin)
+# Guardar producto
 @app.route('/guardar_producto', methods=['POST'])
 def guardar_producto():
     if not solo_admin():
@@ -388,7 +377,7 @@ def guardar_producto():
     db.close()
     return redirect('/productos')
 
-#Eliminar producto (solo el  admin)
+# Eliminar producto
 @app.route('/eliminar_producto/<int:id>')
 def eliminar_producto_admin(id):
     if not solo_admin():
@@ -397,9 +386,7 @@ def eliminar_producto_admin(id):
     db = get_db()
     cursor = db.cursor()
 
-    #Primero eliminar detalles de pedidos que usen este producto
     cursor.execute("DELETE FROM detalle_pedido WHERE producto_id = %s", (id,))
-    #Luego eliminar el producto
     cursor.execute("DELETE FROM productos WHERE id = %s", (id,))
 
     db.commit()
@@ -407,14 +394,14 @@ def eliminar_producto_admin(id):
     db.close()
     return redirect('/productos')
 
-# Pagina para ver todos los productos y poder eliminarlos (solo el admin)
+# Página eliminar producto
 @app.route('/eliminar_producto')
 def pagina_eliminar_producto():
     if not solo_admin():
         return redirect('/')
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("SELECT * FROM productos")
     productos = cursor.fetchall()
     cursor.close()
@@ -422,14 +409,14 @@ def pagina_eliminar_producto():
 
     return render_template('eliminar_producto.html', productos=productos)
 
-# Pagina para ver todos los productos y poder editarlos. (solo el admin)
+# Página editar producto
 @app.route('/editar_producto')
 def pagina_editar_producto():
     if not solo_admin():
         return redirect('/')
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("SELECT * FROM productos")
     productos = cursor.fetchall()
     cursor.close()
@@ -437,14 +424,14 @@ def pagina_editar_producto():
 
     return render_template('editar_producto.html', productos=productos)
 
-# Formulario para editar un producto
+# Form editar producto
 @app.route('/editar_producto/<int:id>')
 def editar_producto_form(id):
     if not solo_admin():
         return redirect('/')
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("SELECT * FROM productos WHERE id = %s", (id,))
     producto = cursor.fetchone()
     cursor.close()
@@ -452,7 +439,7 @@ def editar_producto_form(id):
 
     return render_template('editar_producto_form.html', producto=producto)
 
-# Guardar cambios del producto editado
+# Guardar edición producto
 @app.route('/guardar_edicion/<int:id>', methods=['POST'])
 def guardar_edicion(id):
     if not solo_admin():
@@ -476,16 +463,14 @@ def guardar_edicion(id):
 
     return redirect('/editar_producto')
 
-
-# Las funciones de usuarios que pueden hacer solo los admins:
-
+# Admin usuarios
 @app.route('/admin_usuarios')
 def admin_usuarios():
     if not solo_admin():
         return redirect('/')
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("SELECT id, nombre, correo, rol FROM usuarios")
     usuarios = cursor.fetchall()
     cursor.close()
@@ -493,21 +478,21 @@ def admin_usuarios():
 
     return render_template('admin_usuarios.html', usuarios=usuarios)
 
-
+# Editar usuario
 @app.route('/admin_usuarios_editar/<int:id>', methods=['GET', 'POST'])
 def admin_usuarios_editar(id):
     if not solo_admin():
         return redirect('/')
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     if request.method == 'POST':
         nombre = request.form['nombre']
         correo = request.form['correo']
         rol = request.form['rol']
 
-        # El admin no puede cambiar su rol
         if id == 1:
             rol = 'admin'
+
         cursor.execute("""
             UPDATE usuarios
             SET nombre=%s, correo=%s, rol=%s
@@ -517,21 +502,22 @@ def admin_usuarios_editar(id):
         cursor.close()
         db.close()
         return redirect('/admin_usuarios')
+
     cursor.execute("SELECT id, nombre, correo, rol FROM usuarios WHERE id=%s", (id,))
     usuario = cursor.fetchone()
     cursor.close()
     db.close()
     return render_template('admin_usuarios_editar.html', usuario=usuario)
 
-
+# Eliminar usuario
 @app.route('/admin_usuarios_eliminar/<int:id>')
 def admin_usuarios_eliminar(id):
     if not solo_admin():
         return redirect('/')
 
-    # Esto no permite eliminar al admin principal
     if id == 1:
         return "No puedes eliminar al administrador principal"
+
     db = get_db()
     cursor = db.cursor()
     cursor.execute("DELETE FROM usuarios WHERE id=%s", (id,))
@@ -539,7 +525,6 @@ def admin_usuarios_eliminar(id):
     cursor.close()
     db.close()
     return redirect('/admin_usuarios')
-
 
 # Login
 @app.route('/login', methods=['GET', 'POST'])
@@ -558,7 +543,7 @@ def login():
 # Registro
 @app.route('/registro', methods=['GET', 'POST'])
 def registro():
-    if request.method == 'POST':
+    if request.method == ['POST']:
         registrar_usuario(
             request.form['nombre'],
             request.form['correo'],
@@ -568,4 +553,4 @@ def registro():
     return render_template('registro.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
